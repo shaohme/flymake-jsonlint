@@ -11,7 +11,8 @@
 
 ;; This package adds JSON syntax checker jsonlint.
 ;; Make sure 'jsonlint' binary is on your path.
-;; Installation instructions https://www.npmjs.com/package/@prantlf/jsonlint
+;;
+;; npm install jsonlint -g
 
 ;; flymake-jsonlint expect `jsonlint' to produce stdout like:
 ;; line 2, col 8, found: 'STRING' - expected: 'EOF', '}', ':', ',', ']'.

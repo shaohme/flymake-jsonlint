@@ -1,6 +1,6 @@
 # flymake-jsonlint
 A Flymake backend for validating JSON files for Emacs (26+), using
-[jsonlint](https://www.npmjs.com/package/@prantlf/jsonlint)
+[jsonlint](https://www.npmjs.com/package/jsonlint)
 
 ## Installation
 `flymake-jsonlint` is available on MELPA, so you can add it using your
