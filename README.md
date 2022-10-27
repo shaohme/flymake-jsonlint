@@ -3,8 +3,8 @@ A Flymake backend for validating JSON files for Emacs (26+), using
 [jsonlint](https://www.npmjs.com/package/jsonlint)
 
 ## Installation
-`flymake-jsonlint` is available on MELPA, so you can add it using your
-preferred Emacs package manager or manually to your `load-path`.
+`flymake-jsonlint` is not available on MELPA, byt you can add manually
+to your `load-path`.
 
 ## Usage
 Make sure to have `json-mode` or similar installed before adding this
