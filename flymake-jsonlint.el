@@ -4,7 +4,7 @@
 ;;
 ;; Author: Martin Kjær Jørgensen <me@lagy.org>
 ;; Created: 27 October 2022
-;; Version: 0.1.0
+;; Version: 0.1.1
 ;; Package-Requires: ((emacs "26.1"))
 ;; URL: https://github.com/shaohme/flymake-jsonlint
 ;;; Commentary:
