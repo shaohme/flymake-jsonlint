@@ -1,21 +1,19 @@
 ;;; flymake-jsonlint.el --- JSON linter with jsonlint  -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2022 Martin Kjær Jørgensen (shaohme) <me@lagy.org>
+;; Copyright (C) 2024 Martin Kjær Jørgensen (shaohme) <me@lagy.org>
 ;;
 ;; Author: Martin Kjær Jørgensen <me@lagy.org>
 ;; Created: 27 October 2022
-;; Version: 0.1.1
+;; Version: 0.2.0
 ;; Package-Requires: ((emacs "26.1"))
 ;; URL: https://github.com/shaohme/flymake-jsonlint
 ;;; Commentary:
 
-;; This package adds JSON syntax checker jsonlint.
-;; Make sure 'jsonlint' binary is on your path.
-;;
-;; npm install jsonlint -g
+;; This package adds JSON syntax checker to flymake.
+;; Make sure python>=3.9 compatible executable is on your PATH.
 
-;; flymake-jsonlint expect `jsonlint' to produce stdout like:
-;; line 2, col 8, found: 'STRING' - expected: 'EOF', '}', ':', ',', ']'.
+;; flymake-jsonlint expect `python' to produce stdout like:
+;; Expecting ':' delimiter: line 1 column 9 (char 8)
 
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -41,21 +39,21 @@
   :prefix "flymake-jsonlint-"
   :group 'tools)
 
-(defcustom flymake-jsonlint-program
-  "jsonlint"
-  "Name of `jsonlint' executable."
+(defcustom flymake-jsonlint-python-program
+  "python"
+  "Name of `python' executable."
   :type 'string)
 
 (defvar-local flymake-jsonlint--proc nil)
 
 (defun flymake-jsonlint (report-fn &rest _args)
-  "Flymake backend for jsonlint report using REPORT-FN."
-  (if (not flymake-jsonlint-program)
-      (error "No jsonlint program name set"))
-  (let ((flymake-jsonlint--executable-path (executable-find flymake-jsonlint-program)))
-    (if (or (null flymake-jsonlint--executable-path)
-            (not (file-executable-p flymake-jsonlint--executable-path)))
-        (error "Could not find '%s' executable" flymake-jsonlint-program))
+  "Flymake backend for python report using REPORT-FN."
+  (if (not flymake-jsonlint-python-program)
+      (error "No python program name set"))
+  (let ((flymake-jsonlint--executable-python-path (executable-find flymake-jsonlint-python-program)))
+    (if (or (null flymake-jsonlint--executable-python-path)
+            (not (file-executable-p flymake-jsonlint--executable-python-path)))
+        (error "Could not find '%s' executable" flymake-jsonlint-python-program))
     (when (process-live-p flymake-jsonlint--proc)
       (kill-process flymake-jsonlint--proc)
       (setq flymake-jsonlint--proc nil))
@@ -67,7 +65,7 @@
          (make-process
           :name "flymake-jsonlint" :noquery t :connection-type 'pipe
           :buffer (generate-new-buffer " *flymake-jsonlint*")
-          :command (list flymake-jsonlint--executable-path "-c")
+          :command (list flymake-jsonlint--executable-python-path "-m" "json.tool")
           :sentinel
           (lambda (proc _event)
             (when (eq 'exit (process-status proc))
@@ -76,14 +74,14 @@
                       (with-current-buffer (process-buffer proc)
                         (goto-char (point-min))
                         (let ((diags))
-                          (while (search-forward-regexp "^.*line \\([0-9]+\\), col \\([0-9]+\\), \\(.+\\)$" nil t)
-                            (let ((region (flymake-diag-region source (string-to-number (match-string 1)) (string-to-number (match-string 2)))))
+                          (while (re-search-forward "^\\(.+\\): line \\([0-9]+\\) column \\([0-9]+\\).*$" nil t)
+                            (let ((region (flymake-diag-region source (string-to-number (match-string 2)) (string-to-number (match-string 3)))))
                               ;; expect `region' to only have 2 values (start . end)
                               (push (flymake-make-diagnostic source
                                                              (car region)
                                                              (cdr region)
                                                              :error
-                                                             (match-string 3)) diags)))
+                                                             (match-string 1)) diags)))
                           (funcall report-fn (reverse diags))))
                     (flymake-log :warning "Canceling obsolete check %s"
                                  proc))
