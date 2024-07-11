@@ -6,7 +6,8 @@ A Flymake backend for validating JSON files for Emacs (26+), using
 > flymake-jsonlint currently expects English outputs from Python json.tool cli module.
 
 ## Installation
-`flymake-jsonlint` is available in MELPA repositories.
+`flymake-jsonlint` is not available in MELPA repositories so you have
+to manually install the package.
 
 ## Usage
 Make sure to have `json-mode` or similar installed before adding this
