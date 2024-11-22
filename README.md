@@ -1,4 +1,8 @@
 # flymake-jsonlint
+
+> [!IMPORTANT]
+> Project has moved to [Codeberg](https://codeberg.org/shaohme/flymake-jsonlint)
+
 A Flymake backend for validating JSON files for Emacs (26+), using
 [python json tool](https://docs.python.org/3/library/json.html#module-json.tool)
 
